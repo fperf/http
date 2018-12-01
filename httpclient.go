@@ -1,11 +1,13 @@
 package http
 
 import (
+	"bytes"
 	"fmt"
-	"github.com/shafreeck/fperf"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/shafreeck/fperf"
 )
 
 type options struct {
@@ -13,6 +15,7 @@ type options struct {
 	url       string
 	method    string
 	userAgent string
+	body      string
 	timeout   time.Duration
 }
 type httpClient struct {
@@ -25,6 +28,7 @@ func newHTTPClient(flag *fperf.FlagSet) fperf.Client {
 	flag.BoolVar(&c.opts.keepalive, "keepalive", true, "keep connection alive")
 	flag.StringVar(&c.opts.method, "method", "GET", "method of HTTP request, methods:GET,POST,HEAD,OPTIONS,PUT,DELETE")
 	flag.StringVar(&c.opts.userAgent, "user-agent", "fperf-http-client", "customize the header User-Agent")
+	flag.StringVar(&c.opts.body, "body", "", "content of request body")
 	flag.DurationVar(&c.opts.timeout, "timeout", 10*time.Second, "timeout of request")
 	flag.Usage = func() {
 		fmt.Printf("Usage: http [options] <url>\noptions:\n")
@@ -53,7 +57,7 @@ func (c *httpClient) Dial(addr string) error {
 }
 
 func (c httpClient) Request() error {
-	req, err := http.NewRequest(c.opts.method, c.opts.url, nil)
+	req, err := http.NewRequest(c.opts.method, c.opts.url, bytes.NewReader([]byte(c.opts.body)))
 	if err != nil {
 		return err
 	}
