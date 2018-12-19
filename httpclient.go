@@ -3,6 +3,8 @@ package http
 import (
 	"bytes"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
@@ -67,6 +69,9 @@ func (c httpClient) Request() error {
 	if err != nil {
 		return err
 	}
+	// Read to EOF, then the connection could be cached(keepalive) for next use
+	// See details: https://serholiu.com/go-http-client-keepalive
+	io.Copy(ioutil.Discard, resp.Body)
 	return resp.Body.Close()
 }
 func init() {
