@@ -70,5 +70,5 @@ func (c httpClient) Request() error {
 	return resp.Body.Close()
 }
 func init() {
-	fperf.Register("http", newHTTPClient, "HTTP performanch benchmark client")
+	fperf.Register("http", newHTTPClient, "HTTP performance benchmark client")
 }
