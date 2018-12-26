@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/shafreeck/fperf"
+	"github.com/fperf/fperf"
 )
 
 type options struct {
